@@ -2,209 +2,149 @@
 
 ## Semantic Overview
 
-### Business subject area
-Cisco bookings and revenue performance analytics for booked order lines across customers, products, partners, geography, sales, contracts, and time.
+### Business Subject Area
+Cisco bookings, sales performance, customer revenue, product portfolio, partner channel, contract, and geographic sales analysis.
 
-### Data domain description
-The source model is a star schema centered on `fact_bookings` at the grain of one row per booked order line. It is supported by seven dimensions: Date, Customer, Product, Partner, Geography, Sales Representative, and Contract. The glossary provides business meaning for nearly all modeled structures and confirms that the dataset is intended for booking analysis, fiscal reporting, customer segmentation, channel performance, and product portfolio analysis.
+### Data Domain Description
+The source model is a Kimball-style star schema centered on `fact_bookings`, with surrounding dimensions for date, customer, product, partner, geography, sales representative, and contract. The model supports analysis of booked order lines using additive and non-additive commercial measures. The glossary confirms that the business focus is bookings analytics across time, customer, product, channel, sales, contract, and geography perspectives.
 
-### Business value proposition
-This semantic model enables business-centric analysis of bookings, contract value, pricing, discounting, customer segmentation, channel effectiveness, geographic performance, and sales execution. It provides a reusable intermediate layer for ontology generation, semantic search, metadata management, and downstream AI applications.
+### Business Value Proposition
+This semantic model provides a business-centric representation of booking transactions so downstream consumers can consistently analyze revenue, contract value, pricing, discounting, renewals, customer segmentation, partner contribution, product performance, and regional sales trends.
 
-### Business capabilities enabled
-- Analyze booking revenue by fiscal period, quarter, and year
-- Track Annual Contract Value (ACV) and Total Contract Value (TCV)
-- Compare bookings across customer segments, industries, and tiers
-- Evaluate product family and technology domain performance
-- Assess partner channel contribution and route-to-market effectiveness
-- Measure geographic and theater-level booking outcomes
-- Evaluate sales representative and team performance
-- Analyze booking mix across new, renewal, and upsell transactions
-- Support governed semantic mapping between technical schema and business terminology
+### Business Capabilities Enabled
+- Booking revenue analysis by time, customer, product, geography, partner, sales rep, and contract
+- Renewal and new business tracking
+- Contract value analysis using ACV and TCV
+- Discount and list price monitoring
+- Channel and route-to-market performance analysis
+- Customer segment and industry performance reporting
+- Product family and technology domain performance analysis
+- Fiscal and calendar period reporting
 
-### Three business questions
-1. What is total booking amount, ACV, and TCV by fiscal quarter, region, and product family?
-2. Which customer segments and partner tiers generate the highest booking revenue and renewal volume?
-3. How do discounts, contract term months, and booking type affect booked revenue across sales teams?
-
----
+### Three Business Questions
+1. What is total booking amount by fiscal quarter, region, and product family?
+2. How do renewal bookings and ACV differ by customer segment and contract type?
+3. Which partners, sales teams, and technology domains generate the highest TCV in each region?
 
 ## Semantic Metrics Report
 
 ### Overall Metrics
-| Metric | Value |
-|---|---:|
-| Total Tables | 8 |
-| Total Columns | 58 |
-| Total Relationships | 7 |
-| Total Domains | 5 |
-| Total Measures | 6 |
-| Total Glossary Terms (table + attribute level discovered) | 66 |
-| Mapped Physical Columns | 56 |
-| Unmapped Physical Columns | 2 |
-| Glossary Coverage Percentage | 96.6% |
+- Total Tables: 8
+- Total Columns: 48
+- Total Relationships: 7 explicit foreign key relationships
+- Total Domains: 8
+- Total Measures: 6
+- Total Glossary Terms Identified: 50
+- Mapped Terms: 48
+- Glossary Coverage Percentage: 96.0%
 
-### Schema statistics
-- Fact tables: 1 (`fact_bookings`)
-- Dimension tables: 7 (`dim_date`, `dim_customer`, `dim_product`, `dim_partner`, `dim_geography`, `dim_sales_rep`, `dim_contract`)
-- Lookup tables: 0 explicitly modeled
-- Bridge tables: 0
-- Composite primary keys: 0
-- Foreign keys: 7
-- Degenerate dimensions in fact: `order_number`, `order_line_number`
+### Schema Statistics
+- Fact Tables: 1 (`fact_bookings`)
+- Dimension Tables: 7 (`dim_date`, `dim_customer`, `dim_product`, `dim_partner`, `dim_geography`, `dim_sales_rep`, `dim_contract`)
+- Lookup Tables: 0
+- Bridge Tables: 0
+- Composite Keys: 0
+- Degenerate Dimensions: 2 (`order_number`, `order_line_number`)
+- Primary Keys Present: 8 of 8 tables
+- Foreign Keys Present: 7
 
 ### Per-Domain Metrics
-| Domain Name | Entity Count | Attribute Count | Measure Count | Glossary Coverage | Domain Status |
+| Domain Name | Entity Count | Attribute Count | Measure Count | Glossary Coverage % | Domain Status |
 |---|---:|---:|---:|---:|---|
-| Time | 1 | 7 | 0 | 71.4% | Thin |
-| Customer | 1 | 8 | 0 | 100.0% | Thin |
-| Product | 1 | 7 | 0 | 100.0% | Thin |
-| Channel & Sales | 3 | 17 | 0 | 100.0% | Healthy |
-| Bookings & Contracts | 2 | 19 | 6 | 100.0% | Healthy |
+| Bookings | 1 | 12 | 6 | 100% | Healthy |
+| Date | 1 | 6 | 0 | 60% | Thin |
+| Customer | 1 | 7 | 0 | 100% | Healthy |
+| Product | 1 | 6 | 0 | 100% | Healthy |
+| Partner | 1 | 6 | 0 | 100% | Healthy |
+| Geography | 1 | 4 | 0 | 75% | Thin |
+| Sales | 1 | 6 | 0 | 100% | Healthy |
+| Contract | 1 | 5 | 0 | 100% | Healthy |
 
 ### Glossary Coverage Statistics
-- Fully mapped tables: `dim_date`, `dim_customer`, `dim_product`, `dim_partner`, `dim_sales_rep`, `dim_contract`, `fact_bookings`
-- Partially mapped table: `dim_geography`
-- Unmapped DDL columns relative to glossary: `dim_geography.geography_key`, `fact_bookings.geography_key`
-- Glossary terms present but not in DDL: `day_of_week`, `month_number`, `calendar_quarter`
-- Ambiguous mappings: low ambiguity; `geo_key` in glossary corresponds semantically to `geography_key` in DDL
-- Duplicate glossary terms: none detected in supplied text
-
----
+- Fully mapped table-level glossary sections: 8 of 8
+- Columns with direct glossary match: 46
+- Columns with inferred glossary match: 2
+- Unmapped columns in DDL: 0
+- Glossary attributes not present in DDL: 4
+  - `day_of_week`
+  - `month_number`
+  - `calendar_quarter`
+  - `geo_key` used in glossary where DDL uses `geography_key`
+- Ambiguous mappings: 1
+  - `geography_key` ↔ glossary `geo_key`
+- Duplicate glossary terms detected: 0
+- Invalid glossary mappings: none materially broken; one naming mismatch noted for geography key
 
 ## Semantic Quality & Reasoning Report
 
-### Phase 1 – Input Validation
-#### DDL readability
-- Valid and readable SQL DDL detected.
-- All tables are syntactically understandable and consistently named.
-
-#### Glossary readability
-- Glossary text is readable and organized by table and attribute.
-- Business definitions exist for all listed tables and almost all DDL columns.
-
-#### Validation warnings
-- No missing tables between glossary and DDL.
+### Validation Warnings
+- No missing tables detected.
 - No duplicate table definitions detected.
-- No duplicate glossary terms detected in the supplied glossary text.
-- No invalid column definitions detected.
+- No duplicate glossary terms detected.
+- No invalid column definitions detected in the DDL.
 - No missing primary keys detected.
 - No broken foreign keys detected.
-- Warning: glossary uses `geo_key` while DDL uses `geography_key`; treated as a high-confidence semantic match, but technically inconsistent naming.
-- Warning: glossary contains `day_of_week`, `month_number`, and `calendar_quarter` for `dim_date`, but these columns are not present in DDL.
+- Warning: glossary references `geo_key` while DDL uses `geography_key` in both `dim_geography` and `fact_bookings`.
+- Warning: glossary includes `day_of_week`, `month_number`, and `calendar_quarter` for `dim_date`, but these columns do not exist in the DDL.
 
-### Phase 4 – Semantic Domain Discovery
-#### Domains discovered
-1. **Time**  
-   Description: Calendar and fiscal structures used for period-based analysis.
-2. **Customer**  
-   Description: Customer identity, segmentation, and account classification.
-3. **Product**  
-   Description: Product, portfolio, and technology categorization.
-4. **Channel & Sales**  
-   Description: Partner, geography, and sales execution context for bookings.
-5. **Bookings & Contracts**  
-   Description: Booking transactions, revenue measures, and contract context.
+### Design Observations
+- Deepest relationship chain: 2 hops in the star pattern (`fact_bookings` → any dimension).
+- Orphan tables: 0
+- Many-to-many relationships: 0 explicit; none inferred because no bridge tables exist.
+- Nullable column percentage: approximately 72.9% (35 of 48 columns are nullable based on DDL `NOT NULL` declarations).
+- Schema style: well-formed star schema with a central transactional fact and descriptive dimensions.
+- Fact grain clarity: explicit and strong; one row per booked order line.
 
-### Phase 5 – Business Entity Discovery
-#### Business entities identified
-- Date
+### Glossary Health
+- Unmapped glossary terms: 4 attribute-level terms not represented exactly in DDL
+- Ambiguous mappings: 1
+- Domain coverage: strong across all business areas represented in the schema
+- Coverage gaps:
+  - Date domain glossary is richer than the physical model
+  - Geography key naming is inconsistent between glossary and DDL
+
+### Recommendations
+#### Strong Semantic Domains
+- Bookings
 - Customer
 - Product
 - Partner
-- Geography
-- Sales Representative
+- Sales
 - Contract
-- Booking
 
-#### Measures identified
-- Quantity
-- Unit List Price USD
-- Discount Percent
-- Booking Amount USD
-- ACV USD
-- TCV USD
+#### Weak Semantic Domains
+- Date, because several glossary attributes are absent from the schema
+- Geography, because of glossary-to-schema key naming inconsistency
 
-#### Dimensions identified
-- Date, Customer, Product, Partner, Geography, Sales Representative, Contract
+#### Sparse Modeling
+- No severe sparsity in the core business model
+- Dimension-only domains are naturally attribute-focused and contain no measures
 
-#### Reference data candidates
-- `booking_type`
-- `offer_type`
-- `partner_type`
-- `partner_tier`
-- `route_to_market`
-- `segment`
-- `industry`
-- `account_tier`
-- `sales_role`
-- `sales_team`
-- `coverage_level`
+#### Broken Lineage
+- No broken lineage found in referential structure
+- Minor semantic lineage issue between `geo_key` and `geography_key`
 
-### Phase 6 – Relationship Discovery
-| Relationship Name | Parent Entity | Child Entity | Cardinality | Relationship Type | Confidence |
-|---|---|---|---|---|---:|
-| Booking occurs on Date | Date | Booking | 1-to-many | Foreign key | 1.00 |
-| Booking is for Customer | Customer | Booking | 1-to-many | Foreign key | 1.00 |
-| Booking includes Product | Product | Booking | 1-to-many | Foreign key | 1.00 |
-| Booking sold via Partner | Partner | Booking | 1-to-many | Foreign key | 1.00 |
-| Booking associated with Geography | Geography | Booking | 1-to-many | Foreign key with naming reconciliation | 0.92 |
-| Booking owned by Sales Representative | Sales Representative | Booking | 1-to-many | Foreign key | 1.00 |
-| Booking governed by Contract | Contract | Booking | 1-to-many | Foreign key | 1.00 |
+#### Suggested Join Paths
+- Bookings → Date on `fact_bookings.date_key = dim_date.date_key`
+- Bookings → Customer on `fact_bookings.customer_key = dim_customer.customer_key`
+- Bookings → Product on `fact_bookings.product_key = dim_product.product_key`
+- Bookings → Partner on `fact_bookings.partner_key = dim_partner.partner_key`
+- Bookings → Geography on `fact_bookings.geography_key = dim_geography.geography_key`
+- Bookings → Sales Rep on `fact_bookings.sales_rep_key = dim_sales_rep.sales_rep_key`
+- Bookings → Contract on `fact_bookings.contract_key = dim_contract.contract_key`
 
-### Design observations
-- Deepest relationship chain: 1 hop from `fact_bookings` to each connected dimension in the physical model.
-- Orphan tables: none.
-- Many-to-many relationships: none explicitly modeled.
-- Nullable column percentage: approximately 79.3% (46 nullable columns of 58 total; primary keys and some natural keys are non-null).
-- Star schema quality: strong and analytically aligned.
-- Fact grain clarity: explicit and high quality.
+#### Data Quality Watch-outs
+- `is_renewal` is modeled as integer rather than constrained boolean semantics
+- `discount_pct` lacks explicit range constraint validation in DDL
+- Natural business identifiers such as `customer_id`, `product_id`, `partner_id`, and `rep_id` are `NOT NULL` but not declared unique
+- Several descriptive dimension attributes are nullable and may reduce segmentation quality
+- `unit_list_price_usd` is a rate and should not be aggregated without business rules
 
-### Glossary health
-- Unmapped glossary terms: 3 attribute terms (`day_of_week`, `month_number`, `calendar_quarter`)
-- Ambiguous mappings: 1 naming mismatch (`geo_key` ↔ `geography_key`)
-- Domain coverage: all discovered domains have glossary support
-- Coverage gaps: Time domain has incomplete attribute coverage due to glossary-only date attributes absent in DDL
-
-### Recommendations
-#### Strong semantic domains
-- Bookings & Contracts
-- Channel & Sales
-- Customer
-- Product
-
-#### Weak semantic domains
-- Time, due to missing physical columns relative to glossary expectations
-
-#### Sparse modeling
-- No separate reference/lookup tables exist for code-like descriptive categories; this is acceptable in a denormalized dimensional model but should be documented.
-
-#### Broken lineage
-- No broken lineage detected in FK structure.
-- Naming inconsistency between geography key fields should be standardized.
-
-#### Suggested join paths
-- Booking → Date for fiscal and calendar time analysis
-- Booking → Customer for account, segment, and industry analysis
-- Booking → Product for portfolio and technology performance analysis
-- Booking → Partner → route_to_market for channel effectiveness analysis
-- Booking → Geography for regional and theater reporting
-- Booking → Sales Representative for rep/team performance analysis
-- Booking → Contract for contract duration and renewal analysis
-
-#### Data quality watch-outs
-- `is_renewal` is modeled as integer flag; enforce 0/1 domain values.
-- `discount_pct` should be validated for acceptable percentage ranges.
-- `unit_list_price_usd` is non-additive and should not be summed across rows without business rule context.
-- `booking_amount_usd`, `acv_usd`, and `tcv_usd` should be checked for consistency with contract terms and booking type.
-- Geographic key naming should be aligned between glossary and DDL.
-
-### Phase 12 – Semantic Validation Warnings
-- No duplicate entities detected.
-- No duplicate measures detected.
-- No circular relationships detected.
-- No missing keys detected.
-- No invalid semantic domains detected.
-- No orphan entities detected.
-- Warning retained for glossary/DDL mismatch on geography key naming.
-- Warning retained for glossary-only date attributes not present physically.
+### Semantic Reasoning Notes
+- `fact_bookings` is classified as a fact table due to additive measures and foreign keys to multiple dimensions.
+- All `dim_*` tables are dimensions based on descriptive attributes and single-column surrogate primary keys.
+- `order_number` and `order_line_number` are degenerate dimensions because they reside in the fact table and describe transactional context.
+- Measures inferred from glossary and DDL comments:
+  - Additive: `quantity`, `booking_amount_usd`, `acv_usd`, `tcv_usd`
+  - Non-additive or semi-analytic: `unit_list_price_usd`, `discount_pct`
+- Relationship confidence is high for all seven fact-to-dimension joins because they are explicit foreign keys.
